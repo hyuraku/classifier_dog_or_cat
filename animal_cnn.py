@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Convolution2D,MaxPooling2D
+from keras.layers import Conv2D,MaxPooling2D
 from keras.layers import Activation,Dropout,Flatten,Dense
 from keras.utils import  np_utils
 import numpy as np
@@ -7,9 +7,6 @@ import numpy as np
 classes=["dog","cat"]
 num_classes=len(classes)
 image_size=50
-
-def normal(x):
-    return x.astype("float")/256
 
 # メインの関数を定義
 def main():
@@ -21,3 +18,37 @@ def main():
 
     model=model_train(X_train,y_train)
     model_eval(model,X_test,y_test)
+
+def normal(x):
+    return x.astype("float")/256
+
+def model_train():
+    model = Sequential()
+    model.add(Conv2D(32,(3,3),padding='same',input_shape=X_train.shape[1:]))
+    model.add(Activation('relu'))
+    model.add(Conv2D(32,(3,3)))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Conv2D(64, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(Conv2D(64, (3, 3)))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Flatten())
+    model.add(Dense(512))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes))
+    model.add(Activation('softmax'))
+
+    # initiate RMSprop optimizer
+    opt = keras.optimizer.rmsprop(lr=0.0001,decay=1e-6)
+
+    # train the model using RMSprop
+    model.compile(loss='categorical_crossentropy',
+              optimizer=opt,
+              metrics=['accuracy'])
