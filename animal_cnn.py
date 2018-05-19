@@ -2,6 +2,7 @@ from keras.models import Sequential
 from keras.layers import Conv2D,MaxPooling2D
 from keras.layers import Activation,Dropout,Flatten,Dense
 from keras.utils import  np_utils
+import keras
 import numpy as np
 
 classes=["dog","cat"]
@@ -22,9 +23,9 @@ def main():
 def normal(x):
     return x.astype("float")/256
 
-def model_train():
+def model_train(X,y):
     model = Sequential()
-    model.add(Conv2D(32,(3,3),padding='same',input_shape=X_train.shape[1:]))
+    model.add(Conv2D(32,(3,3),padding='same',input_shape=X.shape[1:]))
     model.add(Activation('relu'))
     model.add(Conv2D(32,(3,3)))
     model.add(Activation('relu'))
@@ -46,9 +47,24 @@ def model_train():
     model.add(Activation('softmax'))
 
     # initiate RMSprop optimizer
-    opt = keras.optimizer.rmsprop(lr=0.0001,decay=1e-6)
+    opt = keras.optimizers.rmsprop(lr=0.0001,decay=1e-6)
 
     # train the model using RMSprop
     model.compile(loss='categorical_crossentropy',
               optimizer=opt,
               metrics=['accuracy'])
+
+    model.fit(X,y,batch_size=32,epochs=100)
+
+    #モデルの保存
+    model.save('./animal_cnn.h5')
+
+    return model
+
+def model_eval(model,X,y):
+    scores=model.evaluate(X,y,verbose=1)
+    print("Test loss:",scores[0])
+    print("Test Accuracy:",scores[1])
+
+if __name__=='__main__':
+    main()
