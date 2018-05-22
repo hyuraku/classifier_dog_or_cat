@@ -15,7 +15,7 @@ Y=[]
 for index,classlabel in enumerate(classes):
     photos_dir="./"+classlabel
     files=glob.glob(photos_dir + "/*.jpg")
-    for i ,file enumerate(files):
+    for i ,file in enumerate(files):
         if i >320: break
         image=Image.open(file)
         image=image.convert("RGB")
