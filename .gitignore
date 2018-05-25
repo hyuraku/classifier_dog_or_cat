@@ -2,3 +2,4 @@ config/
 dog/
 cat/
 .ipynb_checkpoints/
+*.jpg
