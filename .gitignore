@@ -3,3 +3,4 @@ dog/
 cat/
 .ipynb_checkpoints/
 *.jpg
+__pycache__/*
